@@ -58,10 +58,10 @@ For development, use username: `123` and password: `123` to login. **Note:** Dat
 
 ## Accessing Feature Branches
 
-If you want to access a feature branch that has been pushed to the remote repository, use the following commands:
+To access the help-guide branch that has been pushed to the remote repository, use the following commands:
 
-git fetch origin <branch-name>
-git checkout <branch-name>
+git fetch origin colin/help-guide
+git checkout colin/help-guide
 
 ### If You Cloned the Repository
 
@@ -71,7 +71,7 @@ git fetch origin
 
 Then checkout the desired branch:
 
-git checkout <branch-name>
+git checkout colin/help-guide
 
 ### If You Forked the Repository
 
@@ -79,7 +79,7 @@ If you have forked the repository and the feature branch does not exist in your 
 
 1. **Add the original repository as an upstream remote:**
 
-   git remote add upstream <original-repo-url>
+   git remote add upstream <original-repo-url> //https://github.com/puffy-jiggle/Harmony//
 
 2. **Fetch branches from the upstream repository:**
 
@@ -87,10 +87,14 @@ If you have forked the repository and the feature branch does not exist in your 
 
 3. **Check out the feature branch from upstream:**
 
-   git checkout -b <branch-name> upstream/<branch-name>
+   git checkout -b colin/help-guide upstream/colin/help-guide
 
 
-This will allow you to work with the latest version of the feature branch from the original repository.
+This will allow you to work with the latest version of the help-guide feature branch from the original repository.
+
+### Note on saving to the db
+
+You should not need access to the db to use the ML service. If you do want access to the db to save audio files, contact https://github.com/12mv2 and ask for the keys and instructions, to be placed in a .env
 
 ## Roadmap
 
