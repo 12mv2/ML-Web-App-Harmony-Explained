@@ -51,8 +51,6 @@ For development, use username: '123' and password: '123' to login. Note: Databas
 
 ## Connecting to the db
 
-The 
-
 Roadmap / Overview of Harmony Maker:
 
 Enhanced ML Model: Improve generation accuracy and coherence by training on larger datasets and refining model architecture
