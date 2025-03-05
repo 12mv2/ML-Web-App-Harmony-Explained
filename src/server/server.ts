@@ -17,10 +17,26 @@ app.use(express.json());
 // API routes
 app.use('/api', apiRouter);
 
+// Health check endpoint to check connection to ML service
+app.get('/check-ml-service', async (req, res) => {
+  try {
+    const response = await fetch('http://localhost:8000/health', { method: 'GET' });
+    const data = await response.json();
+    res.json({ success: true, mlServiceHealth: data });
+  } catch (err) {
+    console.error('Failed to reach ML service in /check-ml-service:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to contact ML service',
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
+
 // Static file serving and client routing (production only)
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.resolve(__dirname, '..', '..', 'public'))); 
-  
+  app.use(express.static(path.resolve(__dirname, '..', '..', 'public')));
+
   app.get('*', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
   });
@@ -44,9 +60,10 @@ const init = async () => {
   try {
     await setupStorage();
     console.log('Storage buckets initialized successfully');
-    
+
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
+      console.log('You can check ML service status at: http://localhost:4040/check-ml-service');
     });
   } catch (error) {
     console.error('Failed to initialize storage buckets:', error);

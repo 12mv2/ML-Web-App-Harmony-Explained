@@ -89,7 +89,7 @@ async def generate_music(
     background_tasks: BackgroundTasks,
     audio_file: UploadFile = File(...),
     semantic_steps: int = Form(6),  # Required parameter
-    duration: Optional[int] = Form(20),  # Default is 20 seconds
+    duration: Optional[int] = Form(40),  # Default is 20 seconds
     time_steps_factor: Optional[int] = Form(6),
     temperature: Optional[float] = Form(0.85),
     prompt: Optional[str] = Form("Diverse kinds of instrument and richness"),
