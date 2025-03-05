@@ -5,7 +5,7 @@ import pool from '../model/db';
 import * as fs from 'node:fs/promises';
 import { CustomError } from '../types';
 
-const DEFAULT_TIMEOUT_MS = 20 * 60 * 1000; // 20 minutes
+const DEFAULT_TIMEOUT_MS = 3 * 60 * 60 * 1000; // 20 minutes
 const ML_SERVICE_TIMEOUT_MS = Number(process.env.ML_SERVICE_TIMEOUT_MS) || DEFAULT_TIMEOUT_MS;
 
 /**

@@ -1,3 +1,12 @@
+import { setGlobalDispatcher, Agent } from 'undici';
+
+setGlobalDispatcher(
+  new Agent({
+    headersTimeout: 3 * 60 * 60 * 1000 // Matches your 20 minute fetch timeout
+  })
+);
+
+
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
