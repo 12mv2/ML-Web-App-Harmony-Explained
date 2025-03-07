@@ -69,10 +69,11 @@ The `time_steps_factor` works as a multiplier with `duration` to determine how m
 ### Processing Times & Timeouts
 
 The ML service can take a significant amount of time to process audio, especially with higher parameter values:
+(note: generation times are from a 2024 macbook air 16gb RAM M3 chip)
 - Small generations (duration: 10-20 / ~ 1 second audio output): ~3-8 minutes
 - Medium generations (duration: 20-30): ~8-12 minutes
 - Large generations (duration: 30-40): ~12-16 minutes
-- Jumbo generations (duration: 30-40 / 7 min audio output): ~12-16 minutes
+- Jumbo generations (duration: 100 / 7 min audio output): ~90 minutes
 
 To accommodate these long processing times, the application implements:
 1. Extended `headersTimeout` (20 minutes) using the `undici` library in the Node.js backend
