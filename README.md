@@ -1,5 +1,7 @@
 # ML Web App Harmony Explained
 
+> This repository is a fork of [Original Harmony Project](https://github.com/puffy-jiggle/Harmony), which I contributed to as part of the development team. This version provides enhanced documentation and more detailed explanations of the machine learning components to serve as an educational resource.
+
 ## About
 
 ML Web App Harmony Explained is a thoroughly documented ML-powered application that generates complementary musical accompaniment for your original melodies. This project serves as both a functional application and an educational resource showing how to integrate machine learning models into web applications.
