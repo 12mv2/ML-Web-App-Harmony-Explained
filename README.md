@@ -1,7 +1,5 @@
 # ML Web App Harmony Explained
 
-> This repository is a fork of [Original Harmony Project](https://github.com/puffy-jiggle/Harmony), which I contributed to as part of the development team. This version provides enhanced documentation and more detailed explanations of the machine learning components to serve as an educational resource.
-
 ## About
 
 ML Web App Harmony Explained is a thoroughly documented ML-powered application that generates complementary musical accompaniment for your original melodies. This project serves as both a functional application and an educational resource showing how to integrate machine learning models into web applications.
@@ -76,6 +74,24 @@ The machine learning component of HarmonyMaker is based on [Open-MusicLM](https:
    - If **Fine Tokens are used** → 🎶 **Higher-quality, more expressive music**.  
 
 ## Parameter Guidelines
+
+The parameters used in the ML service are defined in `ml_service/api/main.py` within the `@app.post("/generate")` function. These parameters directly control different aspects of the music generation process:
+
+```python
+@app.post("/generate")
+async def generate_music(
+    background_tasks: BackgroundTasks,
+    audio_file: UploadFile = File(...),
+    semantic_steps: int = Form(6)
+    duration: Optional[int] = Form(40),  
+    time_steps_factor: Optional[int] = Form(6),
+    temperature: Optional[float] = Form(0.85),
+    prompt: Optional[str] = Form("Diverse kinds of instrument and richness"),
+    save_for_eval: Optional[bool] = Form(False) 
+):
+```
+
+Each of these parameters affects different stages of the ML pipeline, as explained below.
 
 | Stage                      | Process                                         | Example in Our Jazz Harmony Task                               | Key Parameters Used                                           |
 |----------------------------|-------------------------------------------------|------------------------------------------------|------------------------------------------------|
