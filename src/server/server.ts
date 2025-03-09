@@ -2,7 +2,7 @@ import { setGlobalDispatcher, Agent } from 'undici';
 
 setGlobalDispatcher(
   new Agent({
-    headersTimeout: 3 * 60 * 60 * 1000 // Matches your 20 minute fetch timeout
+    headersTimeout: 24 * 60 * 60 * 1000 //  24 hr fetch timeout
   })
 );
 
