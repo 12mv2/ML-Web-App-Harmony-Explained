@@ -86,10 +86,12 @@ async def generate_music(
     duration: Optional[int] = Form(40),  
     time_steps_factor: Optional[int] = Form(6),
     temperature: Optional[float] = Form(0.85),
-    prompt: Optional[str] = Form("Diverse kinds of instrument and richness"),
+    prompt: Optional[str] = Form("Add a bass line, harmony, and drums, and remove the piano melody to leave space for the soloist."),
     save_for_eval: Optional[bool] = Form(False) 
 ):
 ```
+
+note: if no prompt parameter is given, then "Add a bass line, harmony, and drums, and remove the piano melody to leave space for the soloist." will be used
 
 Each of these parameters affects different stages of the ML pipeline, as explained below.
 
