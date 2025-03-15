@@ -89,12 +89,12 @@ async def generate_music(
     background_tasks: BackgroundTasks,
     audio_file: UploadFile = File(...),
     semantic_steps: int = Form(5),  # Required parameter
-    duration: Optional[int] = Form(1),  # Default is 1 seconds
+    duration: Optional[int] = Form(20),  # Default is 1 seconds
     time_steps_factor: Optional[int] = Form(4),
     temperature: Optional[float] = Form(0.85),
     prompt: Optional[str] = Form("Add a bass line, harmony, and drums, and remove the piano melody to leave space for the soloist."),
-    use_fine_stage: Optional[bool] = Form(False),  # New parameter for fine stage
-    save_for_eval: Optional[bool] = Form(False)
+    use_fine_stage: Optional[str] = Form("true"),  # Accept as string and convert below
+    save_for_eval: Optional[str] = Form("false")
 ):
     """
     Generate music based on an input audio file and various parameters.
@@ -136,6 +136,12 @@ async def generate_music(
     logger.info(f"Starting audio generation with request ID: {request_id}")
     logger.info(f"Parameters: semantic_steps={semantic_steps}, duration={duration}, time_steps_factor={time_steps_factor}, temperature={temperature}, use_fine_stage={use_fine_stage}")
     
+    # Convert string boolean parameters to actual booleans
+    use_fine_stage = use_fine_stage.lower() == "true"
+    save_for_eval = save_for_eval.lower() == "true"
+    
+    logger.info(f"Received use_fine_stage parameter: {use_fine_stage}")
+    
     # Log system resources before processing
     sys_info = get_system_info()
     logger.info(f"System resources before processing: {sys_info}")
@@ -171,10 +177,13 @@ async def generate_music(
         logger.warning("Empty prompt provided. Using default prompt.")
         prompt = "Diverse kinds of instrument and richness"
     
+    logger.info(f"Received use_fine_stage parameter: {use_fine_stage}, type: {type(use_fine_stage)}")
+    
     # Check if fine stage is requested but likely to cause problems
     if use_fine_stage:
+        logger.info(f"Fine stage requested, checking system resources and availability...")
         if sys_info["available_memory_gb"] < 4:
-            logger.warning("Fine stage requested but available memory is less than 4GB. This may cause out-of-memory errors.")
+            logger.warning("Fine stage may use significant memory (less than 4GB available). This might affect performance but we'll try to use it anyway.")
         
         if not generator.fine_stage:
             logger.warning("Fine stage requested but not available. Falling back to coarse stage only.")
