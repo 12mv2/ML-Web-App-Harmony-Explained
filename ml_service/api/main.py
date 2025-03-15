@@ -89,10 +89,11 @@ async def generate_music(
     background_tasks: BackgroundTasks,
     audio_file: UploadFile = File(...),
     semantic_steps: int = Form(5),  # Required parameter
-    duration: Optional[int] = Form(1),  # Default is 20 seconds
+    duration: Optional[int] = Form(1),  # Default is 1 seconds
     time_steps_factor: Optional[int] = Form(4),
     temperature: Optional[float] = Form(0.85),
     prompt: Optional[str] = Form("Add a bass line, harmony, and drums, and remove the piano melody to leave space for the soloist."),
+    use_fine_stage: Optional[bool] = Form(False),  # New parameter for fine stage
     save_for_eval: Optional[bool] = Form(False)
 ):
     """
@@ -103,22 +104,26 @@ async def generate_music(
     
     - semantic_steps: Number of semantic steps for token generation. Controls the complexity
       and quality of the semantic understanding of the input audio. Higher values (6-10) may
-      produce better quality output but will increase processing time. Default is 6, range 1-10 recommended.
+      produce better quality output but will increase processing time. Default is 5, range 1-50 recommended.
     
-    - duration: Target duration of the output audio in seconds. Default is 20 seconds.
+    - duration: Target duration of the output audio in seconds. Default is 1 seconds.
       IMPORTANT: Values over 35-40 seconds may cause generation to fail due to memory constraints.
       For optimal results, stay within 10-35 seconds.
     
     - time_steps_factor: Multiplier that controls temporal resolution in the coarse stage.
       Higher values create more detailed time steps but require more memory. 
-      Default is 6. Works together with duration to determine max_time_steps.
+      Default is 4. Works together with duration to determine max_time_steps.
     
     - temperature: Controls randomness of generation. Values closer to 0 produce more predictable output,
       while higher values (up to 1.5) introduce more creativity and variation.
       Recommended range: 0.5-1.0. Default is 0.85.
     
     - prompt: Text description to guide the audio generation. Describes the style, instruments,
-      or qualities desired in the generated audio. Default is "Diverse kinds of instrument and richness".
+      or qualities desired in the generated audio. Default adds bass, harmony, and drums.
+    
+    - use_fine_stage: Whether to use the fine stage for higher quality audio generation.
+      This will significantly increase processing time and memory usage but can produce more detailed audio.
+      Default is False.
     
     - save_for_eval: Whether to save the input/output files and metadata for later evaluation.
       Useful for debugging and quality assessment. Default is False.
@@ -129,7 +134,7 @@ async def generate_music(
     request_id = str(uuid.uuid4())
     temp_dir = Path("temp") / request_id
     logger.info(f"Starting audio generation with request ID: {request_id}")
-    logger.info(f"Parameters: semantic_steps={semantic_steps}, duration={duration}, time_steps_factor={time_steps_factor}, temperature={temperature}")
+    logger.info(f"Parameters: semantic_steps={semantic_steps}, duration={duration}, time_steps_factor={time_steps_factor}, temperature={temperature}, use_fine_stage={use_fine_stage}")
     
     # Log system resources before processing
     sys_info = get_system_info()
@@ -166,6 +171,15 @@ async def generate_music(
         logger.warning("Empty prompt provided. Using default prompt.")
         prompt = "Diverse kinds of instrument and richness"
     
+    # Check if fine stage is requested but likely to cause problems
+    if use_fine_stage:
+        if sys_info["available_memory_gb"] < 4:
+            logger.warning("Fine stage requested but available memory is less than 4GB. This may cause out-of-memory errors.")
+        
+        if not generator.fine_stage:
+            logger.warning("Fine stage requested but not available. Falling back to coarse stage only.")
+            use_fine_stage = False
+    
     try:
         # Create temporary directories
         input_dir = temp_dir / "input"
@@ -192,6 +206,7 @@ async def generate_music(
             time_steps_factor=time_steps_factor,
             temperature=temperature,
             prompt=prompt,
+            use_fine_stage=use_fine_stage,
             save_for_eval=save_for_eval,
         )
         logger.info(f"Successfully processed audio, output saved to {output_path}")
@@ -222,7 +237,7 @@ async def generate_music(
     
     except torch.cuda.OutOfMemoryError as e:
         # Specific handling for CUDA out of memory errors
-        error_msg = "GPU memory exceeded. Try reducing duration or semantic_steps parameters."
+        error_msg = "GPU memory exceeded. Try reducing duration, semantic_steps, or disable fine stage."
         logger.error(f"CUDA out of memory: {str(e)}")
         logger.error(traceback.format_exc())
         if temp_dir.exists():
@@ -242,7 +257,7 @@ async def generate_music(
         # This might catch memory issues even on CPU
         if "out of memory" in str(e).lower():
             sys_info = get_system_info()
-            error_msg = "Memory limit exceeded. Try reducing duration or semantic_steps parameters."
+            error_msg = "Memory limit exceeded. Try reducing duration, semantic_steps, or disable fine stage."
             logger.error(f"Memory error: {str(e)}")
             logger.error(f"System resources at error: {sys_info}")
             logger.error(traceback.format_exc())
