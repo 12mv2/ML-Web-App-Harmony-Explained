@@ -88,11 +88,11 @@ async def health_check():
 async def generate_music(
     background_tasks: BackgroundTasks,
     audio_file: UploadFile = File(...),
-    semantic_steps: int = Form(5),  # Required parameter
-    duration: Optional[int] = Form(20),  # Default is 1 seconds
-    time_steps_factor: Optional[int] = Form(4),
-    temperature: Optional[float] = Form(0.85),
-    prompt: Optional[str] = Form("Add a bass line, harmony, and drums, and remove the piano melody to leave space for the soloist."),
+    semantic_steps: int = Form(25),  # Required parameter
+    duration: Optional[int] = Form(100),  # Default is 1 seconds
+    time_steps_factor: Optional[int] = Form(1),
+    temperature: Optional[float] = Form(0.50),
+    prompt: Optional[str] = Form("Add a piano harmony, and drums"),
     use_fine_stage: Optional[str] = Form("true"),  # Accept as string and convert below
     save_for_eval: Optional[str] = Form("false")
 ):
