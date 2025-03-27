@@ -27,6 +27,8 @@ This document outlines the development plan for Harmony Explained, an ML-powered
 See our [GitHub Issues](https://github.com/yourusername/harmony-explained/issues) for the current prioritized tasks. Key issues include:
 
 - #5: Upgrade Model Configuration for Higher Quality Audio
+    configuration file created, not implemented. 
+    mps mac tested not compatible with torch :(
 - #6: Optimize Fine Stage Parameters
 - #7: Set Balanced Generation Parameters
 - #8: Create Docker Container for ML Service
@@ -47,3 +49,9 @@ After achieving our MVP, we plan to enhance the project with:
 
 - Generation Time: <0.5 hour for 7 seconds of high-quality audio on GPU
 - Audio Quality: Clear harmonies, tolerable tibre, proper musical structure
+
+Friday March 21st 2025
+next steps
+- implement the new configuration file
+- setup gpu
+- understand the models
